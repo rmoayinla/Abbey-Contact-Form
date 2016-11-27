@@ -65,7 +65,6 @@ class Abbey_Contact_Form extends WP_Widget{
 	private function content (){ ?>
 		
 		<form role="form" id="abbey-contact-form" method="post" >
-		    <?php $this->displayStatus(); ?>
 			<div class="form-group">
     			<label for=""><?php  _e( "Email address:", "abbey-contact-form" ); ?> </label>
     			<input type="email" class="form-control" id="" placeholder="somone@example.com" name="abbey_contact_form_email" />
@@ -76,7 +75,7 @@ class Abbey_Contact_Form extends WP_Widget{
   			</div>
   		<div class="form-group">
     		<label for=""> <?php _e( "Message:", "abbey-contact-form" ); ?></label>
-    		<textarea id="message" class="form-control" name="abbey_contact_form_message"> </textarea>
+    		<textarea id="message" class="form-control" name="abbey_contact_form_message" rows="5"> </textarea>
     		<p class="help-block">Example block-level help text here.</p>
  		 </div>
  		
