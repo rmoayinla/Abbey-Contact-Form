@@ -76,7 +76,15 @@ class Abbey_Contact_Form extends WP_Widget{
   		<div class="form-group">
     		<label for=""> <?php _e( "Message:", "abbey-contact-form" ); ?></label>
     		<textarea id="message" class="form-control" name="abbey_contact_form_message" rows="5"> </textarea>
-    		<p class="help-block">Example block-level help text here.</p>
+    		
+ 		 </div>
+
+ 		 <div class="checkbox">
+ 		 	<label><input type="checkbox" name="abbey_contact_form_checkbox" value="1" />
+ 		 		<?php echo sprintf( 'I agree to %s contact policy and will like to receive updates and reply concerning this message', 
+ 		 								get_bloginfo( "name" ) 
+ 		 						);  ?>
+ 		 	</label>
  		 </div>
  		
  		<button type="submit" class="btn btn-default" name="abbey_contact_form_submit" id="abbey-contact-form-button">Submit</button>
@@ -91,19 +99,22 @@ class Abbey_Contact_Form extends WP_Widget{
 
 	function processForm(){
 		if ( $_POST["action"] !== "abbey_process_form" ) {
-			$this->status_message = __( "Cheating, uh?", "abbey-contact-form" );
+			$this->status_message = sprintf( '<span class="error">%s</span>', __( "Cheating, uh?", "abbey-contact-form" ) );
 		} else{
 			$email = ( is_email( $_POST["abbey_contact_form_email"] ) ) ? $_POST["abbey_contact_form_email"] : "";
 			$fullname = ( !empty ( $_POST["abbey_contact_form_fullname"] ) ) ? sanitize_text_field( $_POST["abbey_contact_form_fullname"] ) : "";
 			$message = ( !empty ( $_POST["abbey_contact_form_message"] ) ) ? sanitize_text_field( $_POST["abbey_contact_form_message"] ) : "";
-			
+			$checkbox = ( !empty( $_POST[ "abbey_contact_form_checkbox" ] ) ) ? (int) $_POST[ "abbey_contact_form_checkbox" ] : "";
 			if( empty( $email ) ){
-				$this->status_message = __( "Email is invalid or empty", "abbey-contact-form" );
+				$this->status_message = sprintf( '<span class="error">%s</span>', __( "Email is invalid or empty", "abbey-contact-form" ) );
 			} elseif( empty ( $fullname ) ) {
-				$this->status_message = __( "Sorry, I need your name or what would I call you?", "abbey-contact-form" );
+				$this->status_message = sprintf( '<span class="error">%s</span>', __( "Sorry, I need your name or what would I call you?", "abbey-contact-form" ) );
 			} elseif ( empty ( $message ) ) {
-				$this->status_message = __( "Message can't be empty, thats the main reason you are contacting me", "abbey-contact-form" );
-			} else {
+				$this->status_message = sprintf( '<span class="error">%s</span>', __( "Message can't be empty, thats the main reason you are contacting me", "abbey-contact-form" ) );
+			} 
+			elseif( empty( $checbox ) ){
+				$this->status_message = sprintf( '<span class="error">%s</span>', __( "Please tick the checkbox and then submit", "abbey-contact-form" ) );
+			}	else {
 				$headers = array();
 				$headers[] = "Reply-To:".$fullname. " <".$email.">";
 				$headers[] = "Content-Type: text/html";
@@ -113,7 +124,7 @@ class Abbey_Contact_Form extends WP_Widget{
 				$send = wp_mail ( $to, "Feedback", $mail, $headers );
 
 				if ( $send ){
-					$this->status_message = __( "Message sent OOO", "abbey-contact-form" );
+					$this->status_message = sprintf( '<span class="success">%s</span>',__( "Message sent OOO", "abbey-contact-form" ) );
 					
 				}
 			}
@@ -129,7 +140,6 @@ class Abbey_Contact_Form extends WP_Widget{
 		<h4>".$name." wrote: </h4>
 		<hr style='width:100%; border:1px dashed #eee;' />
 		<br />
-		<br/>
 		<p style='line-height:20px;font-weight:bold;padding-top:30px;padding-bottom:30px'>".$message."</p>
 		<br/>
 		<br/>

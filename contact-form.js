@@ -3,14 +3,12 @@
 	$( document ).ready( function() {
 		$( document ).on( "click", "#abbey-contact-form-button", function( event ){
 			event.preventDefault(); //prevent form from submitting normally //
-			var ajaxUrl, resultDiv, error, errorMessage, spinner, button;
+			var ajaxUrl, resultDiv, error, errorMessage, spinner, button, jqueryData, alertClass, form;
 			ajaxUrl = abbeyContact.ajax_url;
-			if ( $( ".mini-popup" ).length < 1 ){
-				$( "body" ).append( "<div class='mini-popup'> </div>" );
-			}
-
-			resultDiv = $( ".mini-popup" );
 			
+			alertClass = "";
+			resultDiv = $( ".mini-popup" );
+			form = $( "#abbey-contact-form" );
 			spinner = abbeyContact.spinner_url;
 			button = $( this );
 			var formValues = new FormData(document.getElementById("abbey-contact-form"));
@@ -23,8 +21,28 @@
 				contentType: false, 
 				type: "POST",
 				success: function( data ){
-					alert( data );
-					resultDiv.append(data).fadeIn( "slow" );
+					jqueryData = $($.parseHTML( data ));
+					alertClass = jqueryData.hasClass( "error" ) ? "warning" : "success";
+					if( $.magnificPopup ){
+						$.magnificPopup.open({
+						  items: {
+						    src: '<div class="mini-popup '+alertClass+'">'+data+'</div>',
+						    type: 'inline', 
+
+						  }, 
+						  mainClass: 'bg-white'
+						});
+					}
+					else{
+						alert( data );
+						resultDiv.append(data).fadeIn( "slow" );
+					}
+					if( jqueryData.hasClass( "success" ) ){
+						form.each( function(){ this.reset(); } );
+					}
+					else{
+						form.find( "input" ).filter( ":first" ).focus();
+					}
 				},
 				error: function ( xhr, status, message){
 					alert( status + ": "+message );
@@ -33,7 +51,7 @@
 					button.addClass( "btn-block" ).text( "Processing . . ." ).append( "<span><img src='"+spinner+"' /></span>" );
 				}, 
 				complete: function (  xhr ){
-					button.removeClass( "btn-block" ).text( "Submit" ).addClass( "disabled" );
+					button.removeClass( "btn-block" ).text( "Submit" );
 					resultDiv.fadeOut( 5000 ).delay( 3000 );
 				}
 
