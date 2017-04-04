@@ -112,7 +112,7 @@ class Abbey_Contact_Form extends WP_Widget{
 			} elseif ( empty ( $message ) ) {
 				$this->status_message = sprintf( '<span class="error">%s</span>', __( "Message can't be empty, thats the main reason you are contacting me", "abbey-contact-form" ) );
 			} 
-			elseif( empty( $checbox ) ){
+			elseif( empty( $checkbox ) ){
 				$this->status_message = sprintf( '<span class="error">%s</span>', __( "Please tick the checkbox and then submit", "abbey-contact-form" ) );
 			}	else {
 				$headers = array();
