@@ -34,7 +34,6 @@
 						});
 					}
 					else{
-						alert( data );
 						resultDiv.append(data).fadeIn( "slow" );
 					}
 					if( jqueryData.hasClass( "success" ) ){
